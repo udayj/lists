@@ -38,3 +38,45 @@ impl<T> List<T> {
     }
 }
 
+pub struct Iter<'a, T> {
+    next: Option<&'a Node<T>>,
+}
+
+impl<T> List<T> {
+
+    pub fn iter(&self) -> Iter<'_, T> {
+        Iter {next: self.head.as_deref() }
+    }
+}
+
+impl<'a, T> Iterator for Iter<'a, T> {
+
+    type Item = &'a T;
+
+    fn next(&mut self) -> Option<Self::Item> {
+
+        self.next.map(
+            |node| {
+                self.next = node.next.as_deref();
+                &node.elem
+            }
+        )
+    }
+}
+
+#[cfg(tests)]
+mod test {
+    use super::List;
+
+    #[test]
+    fn basics() {
+
+        let list = List::new();
+        assert_eq!(list.head(), None);
+
+        let list = list.prepend(1).prepend(2).prepend(3);
+
+        assert_eq!(list.tail().head(), Some(&2));
+        assert_eq!(list.tail().tail(), Some(&3));
+    }
+}
