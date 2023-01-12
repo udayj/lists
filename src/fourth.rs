@@ -49,5 +49,22 @@ impl <T> List <T> {
             }
         }
     }
+
+    pub fn pop_front(&mut self) -> Option<T> {
+
+        self.head.take().map(|old_head| {
+            match old_head.borrow_mut().next.take() {
+                Some(new_head) => {
+                    new_head.borrow_mut().prev.take();
+                    self.head = Some(new_head);
+
+                }
+                None => {
+                    self.tail.take();
+                }
+            }
+            Rc::try_unwrap(old_head).ok().unwrap().into_inner().elem
+        })
+    }
 }
 
