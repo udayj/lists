@@ -63,6 +63,30 @@ impl <T> List <T> {
         //Some(&(node.as_ref().unwrap_or(None).elem))
         node.as_ref().map(|actual_node| &actual_node.elem)
     }
+
+    pub fn len(&self) -> u32 {
+
+        let mut length:u32 = 0;
+        let mut node = &self.head;
+        loop {
+            match node {
+                Some(actual_node) => {
+                    length+=1;
+                    node = &actual_node.next;
+                }
+                None => {
+                    break;
+                }
+            }
+        }
+        return length;
+
+    }
+    // add element at index
+    // calc len of list
+    // if index > len add at last
+    // if index =0, push at start of the list
+    // else count index and add at the appropriate location
 }
 
 #[cfg(test)]
@@ -73,9 +97,13 @@ mod tests
     #[test]
     fn basics() {
         let mut x = List::new();
+        assert_eq!(x.len(), 0);
         x.push(1);
+        assert_eq!(x.len(), 1);
         x.push(2);
+        assert_eq!(x.len(), 2);
         x.push(3);
+        assert_eq!(x.len(), 3);
         assert_eq!(x.elem_at(1),Some(&2));
         assert_eq!(x.elem_at(0),Some(&3));
         assert_eq!(x.elem_at(2),Some(&1));
