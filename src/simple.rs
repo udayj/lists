@@ -87,6 +87,57 @@ impl <T> List <T> {
     // if index > len add at last
     // if index =0, push at start of the list
     // else count index and add at the appropriate location
+
+    pub fn add_at(&mut self, index: u32, elem: T) {
+
+        let length=self.len();
+        let actual_index;
+        if index > length {
+            actual_index = length;
+        }
+        else {
+            actual_index = index;
+        }
+        match actual_index {
+            0 => {
+                self.push(elem);
+            }
+            _ => {
+                let prev_ele = self.get_ref_prev_to(actual_index);
+                let mut counter = 0;
+                let mut node = &self.head;
+                while counter< (index-1) {
+
+                    counter+=1;
+                    node=&node.unwrap().next; //node will never be None
+
+                }
+
+                let new_node = Box::new(Node {
+                    elem: elem,
+                    next: prev_ele.next.take()
+                });
+        
+                prev_ele.next = Some(new_node);
+            }
+        }
+    }
+
+    fn get_ref_prev_to(&self, index: u32) -> &Node<T> {
+
+        let mut counter = 0;
+        let mut node = &self.head;
+        while counter< (index-1) {
+
+            counter+=1;
+            node=&node.unwrap().next; //node will never be None
+
+        }
+        //Some(&(node.as_ref().unwrap_or(None).elem))
+        &*node.as_ref().unwrap()
+        //node.as_ref().map(|actual_node| &actual_node.unwrap())
+        
+    }
 }
 
 #[cfg(test)]
