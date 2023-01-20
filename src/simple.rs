@@ -103,27 +103,27 @@ impl <T> List <T> {
                 self.push(elem);
             }
             _ => {
-                let prev_ele = self.get_ref_prev_to(actual_index);
+                //let prev_ele = self.get_ref_prev_to(actual_index);
                 let mut counter = 0;
-                let mut node = &self.head;
+                let mut node = &mut self.head;
                 while counter< (index-1) {
 
                     counter+=1;
-                    node=&node.unwrap().next; //node will never be None
+                    node=&mut node.as_mut().unwrap().next; //node will never be None
 
                 }
 
                 let new_node = Box::new(Node {
                     elem: elem,
-                    next: prev_ele.next.take()
+                    next: node.as_mut().unwrap().next.take()
                 });
         
-                prev_ele.next = Some(new_node);
+                node.as_mut().unwrap().next = Some(new_node);
             }
         }
     }
 
-    fn get_ref_prev_to(&self, index: u32) -> &Node<T> {
+    /*fn get_ref_prev_to(&self, index: u32) -> &Node<T> {
 
         let mut counter = 0;
         let mut node = &self.head;
@@ -137,7 +137,7 @@ impl <T> List <T> {
         &*node.as_ref().unwrap()
         //node.as_ref().map(|actual_node| &actual_node.unwrap())
         
-    }
+    }*/
 }
 
 #[cfg(test)]
@@ -159,5 +159,20 @@ mod tests
         assert_eq!(x.elem_at(0),Some(&3));
         assert_eq!(x.elem_at(2),Some(&1));
         assert_eq!(x.elem_at(3),None);
+
+        x.add_at(0,4);
+        assert_eq!(x.elem_at(0),Some(&4));
+        x.add_at(1,5);
+        assert_eq!(x.elem_at(1),Some(&5));
+        assert_eq!(x.elem_at(2),Some(&3));
+        assert_eq!(x.elem_at(3),Some(&2));
+        assert_eq!(x.elem_at(4),Some(&1));
+        x.add_at(5,6);
+        assert_eq!(x.elem_at(5),Some(&6));
+        assert_eq!(x.elem_at(1),Some(&5));
+        assert_eq!(x.elem_at(2),Some(&3));
+        assert_eq!(x.elem_at(3),Some(&2));
+        assert_eq!(x.elem_at(4),Some(&1));
+        
     }
 }
